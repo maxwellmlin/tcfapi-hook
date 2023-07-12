@@ -2,7 +2,7 @@
   "name": "__tcfapi Hook",
   "description": "Hook the __tcfapi function to inject custom consent settings.",
   "version": "1.0",
-  "manifest_version": 2,
+  "manifest_version": 3,
   "content_scripts": [
     {
       "js": [
@@ -12,6 +12,16 @@
         "<all_urls>"
       ],
       "run_at": "document_start"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "tcfapi-hook.js"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
     }
   ]
 }
