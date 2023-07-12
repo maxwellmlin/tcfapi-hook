@@ -1,20 +1,14 @@
-// For Manifest v3
-// var s = document.createElement('script');
-// s.src = chrome.runtime.getURL('tcfapi-hook.js');
-// s.async = false;  // we need this to run synchronously (block page load)
-// document.documentElement).appendChild(s);
-
-function injectScript(func) {
-    var actualCode = "(" + func + ")();";
+function inject_script(func) {
+    var payload = "(" + func + ")();";
     var script = document.createElement("script");
-    script.textContent = actualCode;
+    script.textContent = payload;
     document.documentElement.appendChild(script);
     // script.remove();
 }
 
-injectScript(function () {
+inject_script(function () {
     function get_tcf_wrapper(__tcfapi) {
-        return function (command, version, callback, parameter) {
+        function wrapper(command, version, callback, parameter) {
             if (command === "addEventListener") {
                 console.log("'addEventListener' hooked");
 
@@ -48,7 +42,9 @@ injectScript(function () {
                 // If the command is not 'addEventListener', just call the original function
                 return __tcfapi(command, version, callback, parameter);
             }
-        };
+        }
+
+        return wrapper
     }
 
     // Set listener for when the __tcfapi function is set
