@@ -43,6 +43,7 @@ inject_script(() => {
                             tcData.publisher.consents,
                             tcData.publisher.legitimateInterests,
                         ];
+                        // skipcq: JS-0125
                         for (const object of objects_to_delete) {
                             Object.keys(object).forEach(key => delete object[key]);
                         }
