@@ -19,7 +19,7 @@ inject_script(() => {
   function get_tcfapi_wrapper (__tcfapi) {
     return function (command, version, callback, parameter) {
       if (command === 'addEventListener') {
-        console.log("__tcfapi addEventListener hooked.")
+        console.log("__tcfapi addEventListener called.")
 
         // Modify the callback to change the tcData before it is passed to the original callback
         const modifiedCallback = (tcData, success) => {
@@ -46,7 +46,7 @@ inject_script(() => {
                 for (const object of objects_to_delete) {
                     Object.keys(object).forEach((key) => delete object[key])
                 }
-                console.log('Intercepted tcData before callback.')
+                console.log('Executing callback with modified tcData.')
           }
 
           callback(tcData, success)
@@ -79,5 +79,6 @@ inject_script(() => {
   })
 
   // Log the HTML of the page so that we know the script has been injected before the page loads
+  console.log('DOM after injection:')
   console.log(document.documentElement.outerHTML)
 })
