@@ -26,6 +26,9 @@ inject_script(() => {
                 const modifiedCallback = (tcData, success) => {
                     console.log('Callback executed')
                     if (success && tcData.gdprApplies) {
+                        /**
+                         * @todo Replace hardcoded tcString with a dynamic one
+                         */
                         tcData.tcString =
                             "CPusOQAPusOQAACAKAENDICgAAAAAAAAAAqIAAAAAAAA.YAAAAAAAAAAA";
 
