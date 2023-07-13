@@ -19,34 +19,35 @@ inject_script(() => {
   function get_tcfapi_wrapper (__tcfapi) {
     return function (command, version, callback, parameter) {
       if (command === 'addEventListener') {
-        console.log("__tcfapi addEventListener hooked.")
+        console.log('__tcfapi addEventListener hooked.')
 
         // Modify the callback to change the tcData before it is passed to the original callback
         const modifiedCallback = (tcData, success) => {
-            if (tcData.gdprApplies) {
-                /**
-                 * @todo Replace hardcoded tcString with a dynamic one
-                */
-               tcData.tcString = 'CPusOQAPusOQAACAKAENDICgAAAAAAAAAAqIAAAAAAAA.YAAAAAAAAAAA'
+          if (tcData.gdprApplies) {
+            /**
+             * @todo Replace hardcoded tcString with a dynamic one
+             */
+            tcData.tcString =
+              'CPusOQAPusOQAACAKAENDICgAAAAAAAAAAqIAAAAAAAA.YAAAAAAAAAAA'
 
-               /**
-                * @todo Check if there's any other objects that need to be deleted
-                */
-               // skipcq: JS-0125
-               objects_to_delete = [
-                   tcData.purpose.consents,
-                   tcData.purpose.legitimateInterests,
-                   tcData.vendor.consents,
-                   tcData.vendor.legitimateInterests,
-                   tcData.specialFeatureOptins,
-                   tcData.publisher.consents,
-                   tcData.publisher.legitimateInterests
-                ]
-                // skipcq: JS-0125
-                for (const object of objects_to_delete) {
-                    Object.keys(object).forEach((key) => delete object[key])
-                }
-                console.log('Intercepted tcData before callback.')
+            /**
+             * @todo Check if there's any other objects that need to be deleted
+             */
+            // skipcq: JS-0125
+            objects_to_delete = [
+              tcData.purpose.consents,
+              tcData.purpose.legitimateInterests,
+              tcData.vendor.consents,
+              tcData.vendor.legitimateInterests,
+              tcData.specialFeatureOptins,
+              tcData.publisher.consents,
+              tcData.publisher.legitimateInterests
+            ]
+            // skipcq: JS-0125
+            for (const object of objects_to_delete) {
+              Object.keys(object).forEach((key) => delete object[key])
+            }
+            console.log('Intercepted tcData before callback.')
           }
 
           callback(tcData, success)
