@@ -1,6 +1,9 @@
 version = 1
 
-exclude_patterns = ["archive/**"]
+exclude_patterns = [
+  "archive/**",
+  "test.js"
+]
 
 [[analyzers]]
 name = "javascript"
