@@ -1,4 +1,4 @@
-// Copy and paste this into the console on a page with a CMP to test the hook
+// Copy and paste this into the console on a page with a CMP to test __tcfapi
 
 const callback = (tcData, success) => {
   console.log(tcData)

@@ -1,52 +1,52 @@
 /**
- * Injects a script into the page
+ * Inject a script into the <html> tag
  * See Method 2b: https://stackoverflow.com/a/9517879/1238150
- * @param {Function} func
+ * @param {Function} func Function to inject upon document_start
  */
 function inject_script (func) {
   const payload = `(${func})();`
   const script = document.createElement('script')
   script.textContent = payload
   document.documentElement.appendChild(script)
-  // script.remove();
 }
 
 inject_script(() => {
   /**
-   * Wraps the __tcfapi function to modify the tcData before it is passed to the callback
+   * Wrap the __tcfapi function to intercept the tcData before it is passed to the callback
    * @param {Function} __tcfapi The original __tcfapi function
    * @returns {Function} Wrapped __tcfapi function
    */
-  function get_tcf_wrapper (__tcfapi) {
+  function get_tcfapi_wrapper (__tcfapi) {
     return function (command, version, callback, parameter) {
       if (command === 'addEventListener') {
-        console.log("'addEventListener' hooked")
+        console.log("__tcfapi addEventListener hooked.")
 
         // Modify the callback to change the tcData before it is passed to the original callback
         const modifiedCallback = (tcData, success) => {
-          console.log('Callback executed')
-          console.log(callback)
-          if (success && tcData.gdprApplies) {
-            /**
-             * @todo Replace hardcoded tcString with a dynamic one
-             */
-            tcData.tcString =
-              'CPusOQAPusOQAACAKAENDICgAAAAAAAAAAqIAAAAAAAA.YAAAAAAAAAAA'
+            if (tcData.gdprApplies) {
+                /**
+                 * @todo Replace hardcoded tcString with a dynamic one
+                */
+               tcData.tcString = 'CPusOQAPusOQAACAKAENDICgAAAAAAAAAAqIAAAAAAAA.YAAAAAAAAAAA'
 
-            // skipcq: JS-0125
-            objects_to_delete = [
-              tcData.purpose.consents,
-              tcData.purpose.legitimateInterests,
-              tcData.vendor.consents,
-              tcData.vendor.legitimateInterests,
-              tcData.specialFeatureOptins,
-              tcData.publisher.consents,
-              tcData.publisher.legitimateInterests
-            ]
-            // skipcq: JS-0125
-            for (const object of objects_to_delete) {
-              Object.keys(object).forEach((key) => delete object[key])
-            }
+               /**
+                * @todo Check if there's any other objects that need to be deleted
+                */
+               // skipcq: JS-0125
+               objects_to_delete = [
+                   tcData.purpose.consents,
+                   tcData.purpose.legitimateInterests,
+                   tcData.vendor.consents,
+                   tcData.vendor.legitimateInterests,
+                   tcData.specialFeatureOptins,
+                   tcData.publisher.consents,
+                   tcData.publisher.legitimateInterests
+                ]
+                // skipcq: JS-0125
+                for (const object of objects_to_delete) {
+                    Object.keys(object).forEach((key) => delete object[key])
+                }
+                console.log('Intercepted tcData before callback.')
           }
 
           callback(tcData, success)
@@ -60,17 +60,17 @@ inject_script(() => {
     }
   }
 
-  // Set listener for when the __tcfapi function is set
+  // Listen for when the __tcfapi function is set
   // skipcq: JS-0041
   Object.defineProperty(window, '__tcfapi', {
     configurable: true,
 
-    set: function setter (val) {
-      val = get_tcf_wrapper(val)
+    set: function setter (__tcfapi) {
+      __tcfapi = get_tcfapi_wrapper(__tcfapi)
 
       Object.defineProperty(this, '__tcfapi', {
         get () {
-          return val
+          return __tcfapi
         },
         set: setter
       })

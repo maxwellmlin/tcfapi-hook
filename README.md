@@ -8,11 +8,9 @@ A chrome extension that hooks the __tcfapi function.
 
 1. Clone this repository
 2. Go to chrome://extensions
-3. Enable `developer mode`
-4. Click `load unpacked` and select the downloaded repository
+3. Enable `Developer mode`
+4. Click `Load unpacked` and select this repository
 
-## Methods
+## Methodology
 
-This extension loads `injector.js` upon `document_start`. The current DOM is logged at this time to ensure no other scripts have loaded yet.
-
-`injector.js` hooks the `__tcfapi` function.
+This extension executes `injector.js` upon `document_start` which injects a script inside the \<html> tag. This script executes before any other part of the DOM loads which ensures that `__tcfapi` is hooked before it is ever called. We define the `set` property of the `__tcfapi` to listen for and immediately wrap the `__tcfapi` whenever it is redefined.
