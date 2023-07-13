@@ -1,0 +1,18 @@
+version = 1
+
+exclude_patterns = [
+  "archive/**",
+  "test.js"
+]
+
+[[analyzers]]
+name = "javascript"
+
+  [analyzers.meta]
+  environment = ["browser"]
+
+[[transformers]]
+name = "standardjs"
+
+[[transformers]]
+name = "prettier"
