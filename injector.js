@@ -1,19 +1,30 @@
+/**
+ * Injects a script into the page
+ * See Method 2b: https://stackoverflow.com/a/9517879/1238150
+ * @param {Function} func 
+ */
 function inject_script(func) {
-    var payload = "(" + func + ")();";
-    var script = document.createElement("script");
+    const payload = `(${func})();`;
+    const script = document.createElement("script");
     script.textContent = payload;
-    document.documentElement.appendChild(script);
+    document.documentElement.appendChild(script);    
     // script.remove();
 }
 
-inject_script(function () {
+inject_script(() => {
+    /**
+     * Wraps the __tcfapi function to modify the tcData before it is passed to the callback
+     * @param {Function} __tcfapi The original __tcfapi function
+     * @returns {Function} Wrapped __tcfapi function
+     */
     function get_tcf_wrapper(__tcfapi) {
-        function wrapper(command, version, callback, parameter) {
+        return function (command, version, callback, parameter) {
             if (command === "addEventListener") {
                 console.log("'addEventListener' hooked");
 
                 // Modify the callback to change the tcData before it is passed to the original callback
                 const modifiedCallback = (tcData, success) => {
+                    console.log('Callback executed')
                     if (success && tcData.gdprApplies) {
                         tcData.tcString =
                             "CPusOQAPusOQAACAKAENDICgAAAAAAAAAAqIAAAAAAAA.YAAAAAAAAAAA";
@@ -27,8 +38,8 @@ inject_script(function () {
                             tcData.publisher.consents,
                             tcData.publisher.legitimateInterests,
                         ];
-                        for (let object of objects) {
-                            for (let key in object) {
+                        for (const object of objects) {
+                            for (const key in object) {
                                 object[key] = false;
                             }
                         }
@@ -43,11 +54,10 @@ inject_script(function () {
                 return __tcfapi(command, version, callback, parameter);
             }
         }
-
-        return wrapper
     }
 
-    // Set listener for when the __tcfapi function is set
+    // Set listener for when the __tcfapi function is set 
+    // skipcq: JS-0041
     Object.defineProperty(window, "__tcfapi", {
         configurable: true,
         
@@ -55,7 +65,7 @@ inject_script(function () {
             val = get_tcf_wrapper(val);
             
             Object.defineProperty(this, "__tcfapi", {
-                get: function () {
+                get() {
                     return val;
                 },
                 set: setter,
