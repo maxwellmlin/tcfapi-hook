@@ -10,9 +10,3 @@ name = "javascript"
 
   [analyzers.meta]
   environment = ["browser"]
-
-[[transformers]]
-name = "standardjs"
-
-[[transformers]]
-name = "prettier"
