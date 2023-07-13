@@ -25,6 +25,7 @@ inject_script(() => {
                 // Modify the callback to change the tcData before it is passed to the original callback
                 const modifiedCallback = (tcData, success) => {
                     console.log('Callback executed')
+                    console.log(callback)
                     if (success && tcData.gdprApplies) {
                         /**
                          * @todo Replace hardcoded tcString with a dynamic one
@@ -32,7 +33,8 @@ inject_script(() => {
                         tcData.tcString =
                             "CPusOQAPusOQAACAKAENDICgAAAAAAAAAAqIAAAAAAAA.YAAAAAAAAAAA";
 
-                        objects = [
+                        // skipcq: JS-0125
+                        objects_to_delete = [
                             tcData.purpose.consents,
                             tcData.purpose.legitimateInterests,
                             tcData.vendor.consents,
@@ -41,10 +43,8 @@ inject_script(() => {
                             tcData.publisher.consents,
                             tcData.publisher.legitimateInterests,
                         ];
-                        for (const object of objects) {
-                            for (const key in object) {
-                                object[key] = false;
-                            }
+                        for (const object of objects_to_delete) {
+                            Object.keys(object).forEach(key => delete object[key]);
                         }
                     }
 
