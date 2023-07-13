@@ -67,6 +67,7 @@ inject_script(() => {
 
     set: function setter (__tcfapi) {
       __tcfapi = get_tcfapi_wrapper(__tcfapi)
+      console.log('__tcfapi wrapped.')
 
       Object.defineProperty(this, '__tcfapi', {
         get () {
