@@ -61,7 +61,6 @@ inject_script(() => {
   }
 
   // Listen for when the __tcfapi function is set
-  // skipcq: JS-0041
   Object.defineProperty(window, '__tcfapi', {
     configurable: true,
 
