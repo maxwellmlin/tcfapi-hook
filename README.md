@@ -1,6 +1,6 @@
-# tcfapi-hook
+# 🍪 tcfapi-hook
 
-A chrome extension that hooks the __tcfapi function.
+A chrome extension that hooks the __tcfapi function to inject custom cookie consent settings.
 
 > **Note:** This extension uses Manifest v2 in order to synchronously execute injected code immediately. See Method 2b of this [post](https://stackoverflow.com/a/9517879/) for our methodology. Since Manifest v2 is deprecated, this extension may not work in new versions of Chrome.
 
