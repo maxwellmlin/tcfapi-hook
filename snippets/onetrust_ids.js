@@ -4,7 +4,7 @@ onetrust_id_elements = document.querySelectorAll('*[id^="ot-header-id-"]');
 success = true;
 categories = {} // Map OneTrust ID to category name (e.g. 1: "Strictly Necessary Cookies")
 onetrust_id_elements.forEach(function (element) {
-    let onetrust_id = element.id.split('ot-header-id-')[1];  // get the id after the prefix
+    let onetrust_id = element.id.split('ot-header-id-')[1];  // get the ID after the prefix
     let category = element.innerText;
 
     // Check for conflicts
